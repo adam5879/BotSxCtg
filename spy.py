@@ -1,18 +1,22 @@
+import os
+import asyncio
 from datetime import datetime, timedelta
 from sys import argv, exit
-from telethon import TelegramClient, events, connection
-from telethon.tl.types import UserStatusRecently, UserStatusEmpty, UserStatusOnline, UserStatusOffline, PeerUser, PeerChat, PeerChannel
-from time import mktime, sleep
+from telethon import TelegramClient, events
+from telethon.tl.types import UserStatusRecently, UserStatusEmpty, UserStatusOnline, UserStatusOffline
+from time import mktime
 import telethon.sync
-from threading import Thread
-import collections
+from collections.abc import Sequence
+from dotenv import load_dotenv
+
+# Загружаем переменные окружения
+load_dotenv()
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-API_HASH = 'your api hash'
-API_ID = 'your api id'
-BOT_TOKEN = "your bot token"
-USER_NAME = "your user name"
-
+API_HASH = os.getenv('API_HASH', 'your_api_hash_here')
+API_ID = int(os.getenv('API_ID', 'your_api_id_here'))
+BOT_TOKEN = os.getenv('BOT_TOKEN', 'your_bot_token_here')
+USER_NAME = "your_username_here"
 client = TelegramClient('data_thief', API_ID, API_HASH)
 
 client.connect()
