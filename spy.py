@@ -176,7 +176,7 @@ async def start(event):
         delay = 5
         if('delay' in user_data):
             delay = user_data['delay']
-        sleep(delay)
+        asyncio.sleep(delay)
     user_data['is_running'] = False
     await event.respond(f'Spy gonna zzzzzz...')
 
@@ -266,7 +266,7 @@ async def getAll(event):
     for key, value in data.items():
         response += f'{key}:\n'
         for j, i in value.items():
-            if (isinstance(i, collections.Sequence)):
+            if (isinstance(i, Sequence)):
                 response += f'{j}: ' + '\n'.join([str(x) for x in i]) + '\n'
             else:
                 response += f'{j}: {i}\n'
@@ -289,13 +289,29 @@ def printToFile(str):
         print(str)
         f.write(str + '\n')
 
-def get_interval(date):
-    d = divmod(date.total_seconds(),86400)  # days
-    h = divmod(d[1],3600)  # hours
-    m = divmod(h[1],60)  # minutes
-    s = m[1]  # seconds
+def get_interval(td):
+    """Форматирует timedelta в читаемый вид"""
+    if not isinstance(td, timedelta):
+        return "unknown"
+    
+    total_seconds = int(td.total_seconds())
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    
+    return f'{hours}h:{minutes:02d}m:{seconds:02d}s'
 
-    return '%dh:%dm:%ds' % (h[0],m[0],s)
+def utc2localtime(utc):
+    if utc is None:
+        return None
+    pivot = mktime(utc.timetuple())
+    offset = datetime.fromtimestamp(pivot) - datetime.utcfromtimestamp(pivot)
+    return utc + offset
+
+def printToFile(text):
+    file_name = 'spy_log.txt'
+    with open(file_name, 'a', encoding='utf-8') as f:
+        print(text)
+        f.write(text + '\n')
 
 if __name__ == '__main__':
     main()
